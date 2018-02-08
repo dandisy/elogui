@@ -1,2 +1,2 @@
 # elogui
-Laravel eloquent GUIpackage for webcore platform
+Laravel eloquent GUI package for webcore platform
