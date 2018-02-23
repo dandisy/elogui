@@ -19,7 +19,7 @@ class DataQueryDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
 
         return $dataTable
-            //->addColumn('action', 'data_queries.datatables_actions')
+            //->addColumn('action', 'elogui::data_queries.datatables_actions')
             ->editColumn('data_source_id', '{{ $data_source[\'name\'] }}');
     }
 

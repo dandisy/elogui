@@ -18,7 +18,7 @@ class ColumnAliasDataTable extends DataTable
     {
         $dataTable = new EloquentDataTable($query);
 
-        return $dataTable->addColumn('action', 'column_aliases.datatables_actions');
+        return $dataTable->addColumn('action', 'elogui::column_aliases.datatables_actions');
     }
 
     /**
