@@ -15,10 +15,10 @@ class EloguiServiceProvider extends ServiceProvider
     {
         require __DIR__.'/routes.php';
 
-        //$this->loadViewsFrom(__DIR__.'/views', 'elogui');
+        $this->loadViewsFrom(__DIR__.'/views', 'elogui');
 
         $this->publishes([
-            __DIR__.'/views' => storage_path('app/public/elogui'),
+            __DIR__.'/views' => resource_path('views/vendor/webcore/elogui'),
         ], 'views');
     }
 

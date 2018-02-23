@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DataTables;
+namespace Webcore\Elogui\DataTables;
 
-use App\Models\ColumnAlias;
+use Webcore\Elogui\Models\ColumnAlias;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 
@@ -78,6 +78,8 @@ class ColumnAliasDataTable extends DataTable
             'name',
             'alias',
             'edit',
+            'un_search',
+            'html',
             'created_by',
             'updated_by',
             'created_at',

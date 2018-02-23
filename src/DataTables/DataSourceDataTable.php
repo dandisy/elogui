@@ -1,8 +1,8 @@
 <?php
 
-namespace App\DataTables;
+namespace Webcore\Elogui\DataTables;
 
-use App\Models\DataSource;
+use Webcore\Elogui\Models\DataSource;
 use Yajra\DataTables\Services\DataTable;
 use Yajra\DataTables\EloquentDataTable;
 

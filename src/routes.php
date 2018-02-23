@@ -1,9 +1,6 @@
 <?php
 
-Route::get('/getTableColumn', 'ColumnController@index');
-
-/**
- * Support select some colums in join using query builder
- * join using eager loading (with) not yet support select some colums in related model
- */
-Route::get('/page/{slug}', 'FrontController@index');
+Route::get('/getTableColumn', 'Webcore\Elogui\Controllers\ColumnController@index');
+Route::resource('dataSources', 'Webcore\Elogui\Controllers\DataSourceController');
+Route::resource('dataQueries', 'Webcore\Elogui\Controllers\DataQueryController');
+Route::resource('columnAliases', 'Webcore\Elogui\Controllers\ColumnAliasController');

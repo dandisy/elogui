@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Webcore\Elogui\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ColumnAlias;
+use Webcore\Elogui\Models\ColumnAlias;
 
 class CreateColumnAliasRequest extends FormRequest
 {

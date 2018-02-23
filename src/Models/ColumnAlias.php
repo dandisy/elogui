@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Webcore\Elogui\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +34,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      @SWG\Property(
  *          property="edit",
  *          description="edit",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="un_search",
+ *          description="un_search",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="html",
+ *          description="html",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -77,6 +87,8 @@ class ColumnAlias extends Model
         'name',
         'alias',
         'edit',
+        'un_search',
+        'html',
         'created_by',
         'updated_by'
     ];
@@ -91,6 +103,8 @@ class ColumnAlias extends Model
         'name' => 'string',
         'alias' => 'string',
         'edit' => 'string',
+        'un_search' => 'string',
+        'html' => 'string',
         'created_by' => 'integer',
         'updated_by' => 'integer'
     ];
@@ -110,6 +124,6 @@ class ColumnAlias extends Model
      **/
     public function dataSource()
     {
-        return $this->belongsTo(\App\Models\DataSource::class, 'data_source_id', 'id');
+        return $this->belongsTo(\Webcore\Elogui\Models\DataSource::class, 'data_source_id', 'id');
     }
 }

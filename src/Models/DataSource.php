@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Webcore\Elogui\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -101,7 +101,7 @@ class DataSource extends Model
      **/
     public function dataQuery()
     {
-        return $this->hasMany(\App\Models\DataQuery::class);
+        return $this->hasMany(\Webcore\Elogui\Models\DataQuery::class);
     }
 
     /**
@@ -109,7 +109,7 @@ class DataSource extends Model
      **/
     public function columnAlias()
     {
-        return $this->hasMany(\App\Models\ColumnAlias::class);
+        return $this->hasMany(\Webcore\Elogui\Models\ColumnAlias::class);
     }
 
     

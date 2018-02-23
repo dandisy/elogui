@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Webcore\Elogui\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -124,7 +124,7 @@ class DataQuery extends Model
      **/
     public function dataSource()
     {
-        return $this->belongsTo(\App\Models\DataSource::class, 'data_source_id', 'id');
+        return $this->belongsTo(\Webcore\Elogui\Models\DataSource::class, 'data_source_id', 'id');
     }
 
     /**
@@ -132,6 +132,6 @@ class DataQuery extends Model
      **/
     public function dataQuery()
     {
-        return $this->belongsTo(\App\Models\DataQuery::class, 'parent', 'id');
+        return $this->belongsTo(\Webcore\Elogui\Models\DataQuery::class, 'parent', 'id');
     }
 }

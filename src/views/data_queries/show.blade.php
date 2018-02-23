@@ -1,4 +1,4 @@
-@extends('layouts.info_app')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
@@ -10,7 +10,7 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row" style="padding-left: 20px">
-                    @include('data_queries.show_fields')
+                    @include('elogui::data_queries.show_fields')
                     <a href="{!! route('dataQueries.index') !!}" class="btn btn-default">Back</a>
                 </div>
             </div>

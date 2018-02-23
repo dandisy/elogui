@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Webcore\Elogui\Controllers;
 
-use App\DataTables\ColumnAliasDataTable;
+use Webcore\Elogui\DataTables\ColumnAliasDataTable;
 use App\Http\Requests;
-use App\Http\Requests\CreateColumnAliasRequest;
-use App\Http\Requests\UpdateColumnAliasRequest;
-use App\Repositories\ColumnAliasRepository;
+use Webcore\Elogui\Requests\CreateColumnAliasRequest;
+use Webcore\Elogui\Requests\UpdateColumnAliasRequest;
+use Webcore\Elogui\Repositories\ColumnAliasRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -32,7 +32,7 @@ class ColumnAliasController extends AppBaseController
      */
     public function index(ColumnAliasDataTable $columnAliasDataTable)
     {
-        return $columnAliasDataTable->render('column_aliases.index');
+        return $columnAliasDataTable->render('elogui::column_aliases.index');
     }
 
     /**
@@ -43,12 +43,12 @@ class ColumnAliasController extends AppBaseController
     public function create()
     {
         // add by dandisy
-        $datasource = \App\Models\DataSource::all();
+        $datasource = \Webcore\Elogui\Models\DataSource::all();
         
 
         // edit by dandisy
         //return view('column_aliases.create');
-        return view('column_aliases.create')
+        return view('elogui::column_aliases.create')
             ->with('datasource', $datasource);
     }
 
@@ -89,7 +89,7 @@ class ColumnAliasController extends AppBaseController
             return redirect(route('columnAliases.index'));
         }
 
-        return view('column_aliases.show')->with('columnAlias', $columnAlias);
+        return view('elogui::column_aliases.show')->with('columnAlias', $columnAlias);
     }
 
     /**
@@ -102,7 +102,7 @@ class ColumnAliasController extends AppBaseController
     public function edit($id)
     {
         // add by dandisy
-        $datasource = \App\Models\DataSource::all();
+        $datasource = \Webcore\Elogui\Models\DataSource::all();
         
 
         $columnAlias = $this->columnAliasRepository->findWithoutFail($id);
@@ -115,7 +115,7 @@ class ColumnAliasController extends AppBaseController
 
         // edit by dandisy
         //return view('column_aliases.edit')->with('columnAlias', $columnAlias);
-        return view('column_aliases.edit')
+        return view('elogui::column_aliases.edit')
             ->with('columnAlias', $columnAlias)
             ->with('datasource', $datasource);
     }

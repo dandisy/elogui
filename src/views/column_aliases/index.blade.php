@@ -18,7 +18,7 @@
         <div class="clearfix"></div>
         <div class="box box-primary">
             <div class="box-body">
-                    @include('column_aliases.table')
+                    @include('elogui::column_aliases.table')
             </div>
         </div>
     </div>

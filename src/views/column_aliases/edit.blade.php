@@ -50,7 +50,7 @@
                <div class="row">
                    {!! Form::model($columnAlias, ['route' => ['columnAliases.update', $columnAlias->id], 'method' => 'patch']) !!}
 
-                        @include('column_aliases.fields')
+                        @include('elogui::column_aliases.fields')
 
                    {!! Form::close() !!}
                </div>

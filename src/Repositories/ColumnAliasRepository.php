@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories;
+namespace Webcore\Elogui\Repositories;
 
-use App\Models\ColumnAlias;
+use Webcore\Elogui\Models\ColumnAlias;
 use Webcore\Generator\Common\BaseRepository;
 
 /**
@@ -24,6 +24,8 @@ class ColumnAliasRepository extends BaseRepository
         'name',
         'alias',
         'edit',
+        'un_search',
+        'html',
         'created_by',
         'updated_by',
         'created_at',

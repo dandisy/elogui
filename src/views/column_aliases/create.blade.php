@@ -51,7 +51,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'columnAliases.store']) !!}
 
-                        @include('column_aliases.fields')
+                        @include('elogui::column_aliases.fields')
 
                     {!! Form::close() !!}
                 </div>

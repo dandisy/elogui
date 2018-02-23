@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repositories;
+namespace Webcore\Elogui\Repositories;
 
-use App\Models\DataQuery;
+use Webcore\Elogui\Models\DataQuery;
 use Webcore\Generator\Common\BaseRepository;
 
 /**

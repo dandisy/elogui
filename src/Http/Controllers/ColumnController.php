@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Webcore\Elogui\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,25 +30,12 @@ class ColumnController extends Controller
             return [];
         }
 
-        $module = explode('/', $request->model);
-        $modelNS = $module[0];
-        $modelName = $module[1];
-        $modelFQNS = 'App\Models\Remote\\'.$modelNS.'\\'.$modelName;
+        $modelName = $request->model;
+        $modelFQNS = 'App\Models\\'.$modelName;
 
         $model = new $modelFQNS();
     
-        if($modelNS === 'ADDON') {
-            $columns = $model->getTableColumns();
-        } else {
-            $db = $model->connection;
-
-            // get all column name of table
-            $columns = DB::connection($db)->select(
-                DB::raw("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$model->table."'")
-            );
-
-            $columns = array_column($columns, 'COLUMN_NAME');
-        }
+        $columns = $model->getTableColumns();
     
         if($request->joinModel) {
             $columns = array_map(function($value) use ($model) {
@@ -57,24 +44,12 @@ class ColumnController extends Controller
     
             foreach($request->joinModel as $item) {
                 $items = explode(',', $item);
-                $joinModule = explode('/', $items[0]);
-                $joinModelNS = $joinModule[0];
-                $joinModelName = $joinModule[1];
-                $joinModelFQNS = 'App\Models\Remote\\'.$joinModelNS.'\\'.$joinModelName;
+                $joinModelName = $items[0];
+                $joinModelFQNS = 'App\Models\Remote\\'.$joinModelName;
 
                 $joinModel = new $joinModelFQNS();
     
-                if($joinModelNS === 'ADDON') {
-                    $joinColumns = $joinModel->getTableColumns();
-                } else {
-                    $joinDb = $joinModel->connection;
-
-                    $joinColumns = DB::connection($joinDb)->select(
-                        DB::raw("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$joinModel->table."'")
-                    );
-
-                    $joinColumns = array_column($joinColumns, 'COLUMN_NAME');
-                }
+                $joinColumns = $joinModel->getTableColumns();
     
                 $joinColumns = array_map(function($value) use ($joinModel, $items) {
                     if(isset($items[3])) {

@@ -1,4 +1,4 @@
-@extends('layouts.info_app')
+@extends('layouts.app')
 
 @section('css')
     <style>
@@ -33,7 +33,7 @@
             width: 100%;
         }
         .input-group-addon {
-            width: 17%;
+            width: 12%;
             text-align: left;
         }
         .input-group .form-control {
@@ -96,7 +96,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'dataSources.store']) !!}
 
-                        @include('data_sources.fields')
+                        @include('elogui::data_sources.fields')
 
                     {!! Form::close() !!}
                 </div>

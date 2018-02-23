@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Webcore\Elogui\Controllers;
 
-use App\Models\DataQuery;
-use App\Models\ColumnAlias;
-use App\DataTables\DataSourceDataTable;
+use Webcore\Elogui\Models\DataQuery;
+use Webcore\Elogui\Models\ColumnAlias;
+use Webcore\Elogui\DataTables\DataSourceDataTable;
 use App\Http\Requests;
-use App\Http\Requests\CreateDataSourceRequest;
-use App\Http\Requests\UpdateDataSourceRequest;
-use App\Repositories\DataSourceRepository;
-use App\Repositories\DataQueryRepository;
-use App\Repositories\ColumnAliasRepository;
+use Webcore\Elogui\Requests\CreateDataSourceRequest;
+use Webcore\Elogui\Requests\UpdateDataSourceRequest;
+use Webcore\Elogui\Repositories\DataSourceRepository;
+use Webcore\Elogui\Repositories\DataQueryRepository;
+use Webcore\Elogui\Repositories\ColumnAliasRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -48,7 +48,7 @@ class DataSourceController extends AppBaseController
      */
     public function index(DataSourceDataTable $dataSourceDataTable)
     {
-        return $dataSourceDataTable->render('data_sources.index');
+        return $dataSourceDataTable->render('elogui::data_sources.index');
     }
 
     /**
@@ -71,7 +71,7 @@ class DataSourceController extends AppBaseController
 
         // edit by dandisy
         //return view('data_sources.create');
-        return view('data_sources.create')
+        return view('elogui::data_sources.create')
             ->with('models', $models);
 
         //return $dataQueryDataTable->render('data_sources.create', ['models' => $models]);
@@ -92,13 +92,18 @@ class DataSourceController extends AppBaseController
         $query = array_merge_recursive(
             $input['command'],
             array_key_exists('column', $input) ? $input['column'] : [],
+            array_key_exists('columnOrder', $input) ? $input['columnOrder'] : [],
             array_key_exists('operator', $input) ? $input['operator'] : [], 
             array_key_exists('value', $input) ? $input['value'] : []
         );
 
+
         unset($input['command']);
         if(array_key_exists('column', $input)) {
             unset($input['column']);
+        }
+        if(array_key_exists('columnOrder', $input)) {
+            unset($input['columnOrder']);
         }
         if(array_key_exists('operator', $input)) {
             unset($input['operator']);
@@ -122,6 +127,15 @@ class DataSourceController extends AppBaseController
 
         // handling data query
         foreach($query as $item) {
+            // change column value with columnOrder value
+            if(array_key_exists('column', $item)) {
+                if(array_key_exists('columnOrder', $item)) {
+                    $item['column'] = $item['columnOrder'];
+
+                    unset($item['columnOrder']);
+                }
+            }
+
             $subQuery = NULL;
             if(isset($item['subquery'])) {
                 $subQuery = $item['subquery'];
@@ -203,7 +217,7 @@ class DataSourceController extends AppBaseController
             return redirect(route('dataSources.index'));
         }
 
-        return view('data_sources.show')->with('dataSource', $dataSource);
+        return view('elogui::data_sources.show')->with('dataSource', $dataSource);
     }
 
     /**
@@ -222,7 +236,7 @@ class DataSourceController extends AppBaseController
         } catch (\Exception $e) {
             Flash::error('Connection to database server ERROR!');
 
-            return view('data_sources.edit')
+            return view('elogui::data_sources.edit')
                 ->with('dataSource', [])
                 ->with('models', [])
                 ->with('dataQuery', [])
@@ -246,24 +260,12 @@ class DataSourceController extends AppBaseController
         // get all column name of table
         $columns = [];
         if(isset($dataSource->model)) {
-            $module = explode('/', $dataSource->model);
-            $modelNS = $module[0];
-            $modelName = $module[1];
-            $modelFQNS = 'App\Models\Remote\\'.$modelNS.'\\'.$modelName;
+            $modelName = $dataSource->model;
+            $modelFQNS = 'App\Models\\'.$modelName;
 
             $model = new $modelFQNS();
 
-            if($modelNS === 'ADDON') {
-                $columns = $model->getTableColumns();
-            } else {
-                $db = $model->connection;
-
-                $columns = DB::connection($db)->select(
-                    DB::raw("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$model->table."'")
-                );
-
-                $columns = array_column($columns, 'COLUMN_NAME');
-            }
+            $columns = $model->getTableColumns();
 
             $relations = $dataQuery->whereIn('command', ['join', 'leftJoin']);
 
@@ -274,30 +276,20 @@ class DataSourceController extends AppBaseController
 
                 foreach($relations as $relation) {
                     $relValue = explode(',', $relation['value']);
-                    $joinModule = explode('/', $relValue[0]);
-                    $joinModelNS = $joinModule[0];
-                    $joinModelName = $joinModule[1];
-                    $joinModelFQNS = 'App\Models\Remote\\'.$joinModelNS.'\\'.$joinModelName;
+                    if(stristr($relValue[0], ' AS ')) {
+                        $joinNM = explode(' ', $relValue[0]);
+
+                        $joinModelName = $joinNM[0];
+                    } else {
+                        $joinModelName = $relValue[0];
+                    }
+                    $joinModelFQNS = 'App\Models\\'.$joinModelName;
 
                     $joinModel = new $joinModelFQNS();
 
-                    if($joinModelNS === 'ADDON') {
-                        $joinColumns = $joinModel->getTableColumns();
-                    } else {
-                        $joinDb = $joinModel->connection;
-
-                        $joinColumns = DB::connection($joinDb)->select(
-                            DB::raw("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$joinModel->table."'")
-                        );
-
-                        $joinColumns = array_column($joinColumns, 'COLUMN_NAME');
-                    }
+                    $joinColumns = $joinModel->getTableColumns();
 
                     $joinColumns = array_map(function($value) use ($joinModel, $relValue) {
-                        if(isset($relValue[3])) {
-                            return $relValue[3].'.'.$value;
-                        }
-
                         return $joinModel->table.'.'.$value;
                     }, $joinColumns);
 
@@ -321,7 +313,7 @@ class DataSourceController extends AppBaseController
 
         // edit by dandisy
         //return view('data_sources.edit')->with('dataSource', $dataSource);
-        return view('data_sources.edit')
+        return view('elogui::data_sources.edit')
             ->with('dataSource', $dataSource)
             ->with('models', $models)
             ->with('dataQuery', $dataQuery)
@@ -423,6 +415,12 @@ class DataSourceController extends AppBaseController
                     }
                     if(!$item['edit']) {
                         unset($item['edit']);
+                    }
+                    if(empty($item['un_search'])) {
+                        $item['un_search'] = NULL;
+                    }
+                    if(empty($item['html'])) {
+                        $item['html'] = NULL;
                     }
 
                     $item['updated_by'] = Auth::user()->id;

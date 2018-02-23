@@ -1,4 +1,4 @@
-@extends('layouts.info_app')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
@@ -51,7 +51,7 @@
                 <div class="row">
                     {!! Form::open(['route' => 'dataQueries.store']) !!}
 
-                        @include('data_queries.fields')
+                        @include('elogui::data_queries.fields')
 
                     {!! Form::close() !!}
                 </div>

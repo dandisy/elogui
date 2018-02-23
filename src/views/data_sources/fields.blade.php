@@ -58,6 +58,7 @@
                                 $query['command'] === 'limit' or
                                 $query['command'] === 'selectRaw' or
                                 $query['command'] === 'whereRaw' or
+                                $query['command'] === 'from' or
                                 $query['command'] === 'with' or
                                 $query['command'] === 'join' or
                                 $query['command'] === 'leftJoin' or
@@ -75,13 +76,14 @@
                             @elseif(
                                 $query['command'] === 'select' or
                                 $query['command'] === 'addSelect' or
-                                $query['command'] === 'orderBy' or
                                 $query['command'] === 'whereNull' or
                                 $query['command'] === 'whereNotNull' or
                                 $query['command'] === 'groupBy' or
+                                $query['command'] === 'sum' or
                                 $query['command'] === 'count' or
+                                $query['command'] === 'avg' or
                                 $query['command'] === 'max' or
-                                $query['command'] === 'avg'
+                                $query['command'] === 'min'
                             )
                                 @php
                                     $fieldGroup = TRUE;
@@ -89,6 +91,7 @@
                                     $value = FALSE;
                                 @endphp
                             @elseif(
+                                $query['command'] === 'orderBy' or
                                 $query['command'] === 'whereIn' or
                                 $query['command'] === 'whereNotIn' or
                                 $query['command'] === 'whereBetween' or
@@ -145,6 +148,7 @@
                                                 'whereIn' => 'whereIn',
                                                 'whereNotIn' => 'whereNotIn',
                                                 'orWhere' => 'orWhere',
+                                                'from' => 'from',
                                                 'with' => 'with',
                                                 'join' => 'join',
                                                 'leftJoin' => 'leftJoin',
@@ -165,9 +169,11 @@
                                                 'raw' => 'raw',
                                                 'whereExists' => 'whereExists',
                                                 'inRandomOrder' => 'inRandomOrder',
+                                                'sum' => 'sum',
                                                 'count' => 'count',
+                                                'avg' => 'avg',
                                                 'max' => 'max',
-                                                'avg' => 'avg'
+                                                'min' => 'min'
                                             ], $query['command'], ['class' => 'form-control select2 command']) !!}
                                         </div>
                                         <div class="field-group form-group" style="{{$fieldGroup == false ? 'display:none;' : ''}}width: 100%">
@@ -238,6 +244,7 @@
                                                 'whereIn' => 'whereIn',
                                                 'whereNotIn' => 'whereNotIn',
                                                 'orWhere' => 'orWhere',
+                                                'from' => 'from',
                                                 'with' => 'with',
                                                 'join' => 'join',
                                                 'leftJoin' => 'leftJoin',
@@ -258,9 +265,11 @@
                                                 'raw' => 'raw',
                                                 'whereExists' => 'whereExists',
                                                 'inRandomOrder' => 'inRandomOrder',
+                                                'sum' => 'sum',
                                                 'count' => 'count',
+                                                'avg' => 'avg',
                                                 'max' => 'max',
-                                                'avg' => 'avg'
+                                                'min' => 'min'
                                             ], $query['command'], ['class' => 'form-control select2 command']) !!}
                                         </div>
                                         <div class="field-group form-group" style="{{$fieldGroup == false ? 'display:none;' : ''}}width: 100%">
@@ -330,6 +339,7 @@
                                         'whereIn' => 'whereIn',
                                         'whereNotIn' => 'whereNotIn',
                                         'orWhere' => 'orWhere',
+                                        'from' => 'from',
                                         'with' => 'with',
                                         'join' => 'join',
                                         'leftJoin' => 'leftJoin',
@@ -350,9 +360,11 @@
                                         'raw' => 'raw',
                                         'whereExists' => 'whereExists',
                                         'inRandomOrder' => 'inRandomOrder',
+                                        'sum' => 'sum',
                                         'count' => 'count',
+                                        'avg' => 'avg',
                                         'max' => 'max',
-                                        'avg' => 'avg'
+                                        'min' => 'min'
                                     ], null, ['class' => 'form-control select2 command']) !!}
                                 </div>
                                 <div class="field-group form-group" style="width: 100%">
@@ -436,12 +448,28 @@
                             <label for="column[{{$index}}]-alias">{{$item->name}} :</label>
                             <input name="alias[{{$index}}][index]" type="hidden" value="{{$item->id}}">
                             <div class="input-group">
-                                <span class="input-group-addon">Alias :</span>
+                                <span class="input-group-addon">Alias</span>
                                 <input class="form-control column-alias" name="alias[{{$index}}][alias]" type="text" placeholder="Format column data" value="{{$item->alias ? : NULL}}" id="column[{{$index}}]-alias">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-addon">Edit :</span>
+                                <span class="input-group-addon">Edit</span>
                                 <input class="form-control column-edit" name="alias[{{$index}}][edit]" type="text" placeholder="Edit column data" value="{{$item->edit ? : NULL}}" id="column[{{$index}}]-edit">
+                            </div>
+                            <div class="col-sm-6 no-padding">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <input name="alias[{{$index}}][un_search]" type="checkbox"{{$item->un_search ? 'checked="checked"' : NULL}} id="column[{{$index}}]-search">
+                                    </div>
+                                    <span class="form-control column-search">Unsearchable Column</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 no-padding">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <input name="alias[{{$index}}][html]" type="checkbox"{{$item->html ? 'checked="checked"' : NULL}} id="column[{{$index}}]-html">
+                                    </div>
+                                    <span class="form-control column-html">Render Data as HTML</span>
+                                </div>
                             </div>
                         </div>
                         @endforeach
@@ -489,6 +517,7 @@
                             'whereIn' => 'whereIn',
                             'whereNotIn' => 'whereNotIn',
                             'orWhere' => 'orWhere',
+                            'from' => 'from',
                             'with' => 'with',
                             'join' => 'join',
                             'leftJoin' => 'leftJoin',
@@ -509,9 +538,11 @@
                             'raw' => 'raw',
                             'whereExists' => 'whereExists',
                             'inRandomOrder' => 'inRandomOrder',
+                            'sum' => 'sum',
                             'count' => 'count',
+                            'avg' => 'avg',
                             'max' => 'max',
-                            'avg' => 'avg'
+                            'min' => 'min'
                         ], null, ['class' => 'form-control select2 command']) !!}
                     </div>
                     <div class="field-group form-group" style="width: 100%">
@@ -589,6 +620,7 @@
                             'whereIn' => 'whereIn',
                             'whereNotIn' => 'whereNotIn',
                             'orWhere' => 'orWhere',
+                            'from' => 'from',
                             'with' => 'with',
                             'join' => 'join',
                             'leftJoin' => 'leftJoin',
@@ -609,9 +641,11 @@
                             'raw' => 'raw',
                             'whereExists' => 'whereExists',
                             'inRandomOrder' => 'inRandomOrder',
+                            'sum' => 'sum',
                             'count' => 'count',
+                            'avg' => 'avg',
                             'max' => 'max',
-                            'avg' => 'avg'
+                            'min' => 'min'
                         ], null, ['class' => 'form-control select2 command']) !!}
                     </div>
                     <div class="field-group form-group" style="width: 100%">
@@ -699,6 +733,8 @@
                 el.append('<option value="'+value+'">'+value+'</option>');
             });
 
+            el.multiSelect('refresh');
+
             el.multiSelect({
                 keepOrder: true,
                 selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Search...'>",
@@ -736,14 +772,35 @@
                 }
             });
 
-            el.multiSelect('refresh');
             selectEl.select2();
         });
     }
 
+    // addition for multiSelect orderable
+    $(document).on('click', '.ms-elem-selectable', function () {
+        var columnOrderEl = $(this).parents('.field-group').find('.column-order');
+
+        if(columnOrderEl.length > 0) {
+            var elValue = columnOrderEl.val();
+            columnOrderEl.val(elValue ? elValue+','+$(this).find('span').text() : $(this).find('span').text())
+        } else {
+            console.log($(this).parents('.field-group'));
+            $(this).parents('.field-group').append('<input type="hidden" class="column-order" name="columnOrder'+$(this).parents('tr').data('parent')+'[columnOrder]" value="'+$(this).find('span').text()+'" />');
+        }
+    });
+
+    $(document).on('click', '.ms-elem-selection', function () {
+        var thisValue = $(this).find('span').text();
+        var columnOrderEl = $(this).parents('.field-group').find('.column-order');
+
+        columnOrderEl.val(columnOrderEl.val().replace(','+thisValue, ''));
+        columnOrderEl.val(columnOrderEl.val().replace(',,', ','));
+    });
+    // end addition for multiSelect orderable
+
     // handling columns alias
     @if(isset($columnAlias))
-        var columnAlias = {!!$columnAlias->toJson()!!};
+        var columnAlias = @json($columnAlias);
     @else
         var columnAlias = [];
     @endif
@@ -766,6 +823,7 @@
             val === 'limit' ||
             val === 'selectRaw' ||
             val === 'whereRaw' ||
+            val === 'from' ||
             val === 'with' ||
             val === 'join' ||
             val === 'leftJoin' ||
@@ -781,18 +839,20 @@
         } else if (
             val === 'select' ||
             val === 'addSelect' ||
-            val === 'orderBy' ||
             val === 'whereNull' ||
             val === 'whereNotNull' ||
             val === 'groupBy' ||
+            val === 'sum' ||
             val === 'count' ||
+            val === 'avg' ||
             val === 'max' ||
-            val === 'avg'
+            val === 'min'
         ) {
             $(this).parents('tr').find('.field-group').show();
             $(this).parents('tr').find('.operator').hide();
             $(this).parents('tr').find('.value').hide();
         } else if (
+            val === 'orderBy' ||
             val === 'whereIn' ||
             val === 'whereNotIn' ||
             val === 'whereBetween' ||
@@ -823,12 +883,28 @@
                                 <input name="alias[`+index+`][index]" type="hidden" value="`+obj.id+`">
                                 <input name="alias[`+index+`][name]" type="hidden" value="`+value+`">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Alias :</span>
+                                    <span class="input-group-addon">Alias</span>
                                     <input class="form-control column-alias" name="alias[`+index+`][alias]" type="text"`+(obj.alias ? ' value="'+obj.alias+'"' : ' placeholder="Column alias"')+`" id="column[`+index+`]-alias">
                                 </div>
                                 <div class="input-group">
-                                    <span class="input-group-addon">Edit :</span>
-                                <input class="form-control column-edit" name="alias[`+index+`][edit]" type="text"`+(obj.edit ? ' value="'+obj.edit+'"' : ' placeholder="Edit column data"')+`" id="column[`+index+`]-edit">
+                                    <span class="input-group-addon">Edit</span>
+                                    <input class="form-control column-edit" name="alias[`+index+`][edit]" type="text"`+(obj.edit ? ' value="'+obj.edit+'"' : ' placeholder="Edit column data"')+`" id="column[`+index+`]-edit">
+                                </div>
+                                <div class="col-sm-6 no-padding">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <input name="alias[`+index+`][un_search]" type="checkbox"`+(obj.un_search ? ' checked="checked"' : '')+` id="column[`+index+`]-search">
+                                        </div>
+                                        <span class="form-control column-search">Unsearchable Column</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 no-padding">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <input name="alias[`+index+`][html]" type="checkbox"`+(obj.html ? ' checked="checked"' : '')+` id="column[`+index+`]-html">
+                                        </div>
+                                        <span class="form-control column-html">Render Data as HTML</span>
+                                    </div>
                                 </div>
                             </div>
                         `);
@@ -839,12 +915,28 @@
                                 <input name="alias[`+index+`][name]" type="hidden" value="`+value+`">
                                 <input name="alias[`+index+`][select]" type="hidden" value="1">
                                 <div class="input-group">
-                                    <span class="input-group-addon">Alias :</span>
+                                    <span class="input-group-addon">Alias</span>
                                     <input class="form-control column-alias" name="alias[`+index+`][alias]" type="text" placeholder="Column alias" id="column[`+index+`]-alias">
                                 </div>
                                 <div class="input-group">
-                                    <span class="input-group-addon">Edit :</span>
+                                    <span class="input-group-addon">Edit</span>
                                     <input class="form-control column-edit" name="alias[`+index+`][edit]" type="text" placeholder="Edit column data" id="column[`+index+`]-edit">
+                                </div>
+                                <div class="col-sm-6 no-padding">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <input name="alias[`+index+`][un_search]" type="checkbox" id="column[`+index+`]-search">
+                                        </div>
+                                        <span class="form-control column-search">Unsearchable Column</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 no-padding">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <input name="alias[`+index+`][html]" type="checkbox" id="column[`+index+`]-html">
+                                        </div>
+                                        <span class="form-control column-html">Render Data as HTML</span>
+                                    </div>
                                 </div>
                             </div>
                         `);
@@ -885,12 +977,28 @@
                             <label for="column[`+index+`]-alias">`+value+` :</label>
                             <input name="alias[`+index+`][name]" type="hidden" value="`+value+`">
                             <div class="input-group">
-                                <span class="input-group-addon">Alias :</span>
+                                <span class="input-group-addon">Alias</span>
                                 <input class="form-control column-alias" name="alias[`+index+`][alias]" type="text" placeholder="Column alias" id="column[`+index+`]-alias">
                             </div>
                             <div class="input-group">
-                                <span class="input-group-addon">Edit :</span>
+                                <span class="input-group-addon">Edit</span>
                                 <input class="form-control column-edit" name="alias[`+index+`][edit]" type="text" placeholder="Edit column data" id="column[`+index+`]-edit">
+                            </div>
+                            <div class="col-sm-6 no-padding">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <input name="alias[`+index+`][un_search]" type="checkbox" id="column[`+index+`]-search">
+                                    </div>
+                                    <span class="form-control column-search">Unsearchable Column</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 no-padding">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <input name="alias[`+index+`][html]" type="checkbox" id="column[`+index+`]-html">
+                                    </div>
+                                    <span class="form-control column-html">Render Data as HTML</span>
+                                </div>
                             </div>
                         </div>
                     `);
@@ -907,7 +1015,7 @@
     // end handling columns alias
 
     $(document).on('keyup', '.column-alias', function () {
-        $(this).siblings('.column-edit').val($(this).val());
+        $(this).parents('.form-group').find('.column-edit').val($(this).val());
     });
 
     function findObjectByKey(array, key, value) {

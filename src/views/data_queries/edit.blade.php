@@ -1,4 +1,4 @@
-@extends('layouts.info_app')
+@extends('layouts.app')
 
 @section('content')
     <section class="content-header">
@@ -50,7 +50,7 @@
                <div class="row">
                    {!! Form::model($dataQuery, ['route' => ['dataQueries.update', $dataQuery->id], 'method' => 'patch']) !!}
 
-                        @include('data_queries.fields')
+                        @include('elogui::data_queries.fields')
 
                    {!! Form::close() !!}
                </div>

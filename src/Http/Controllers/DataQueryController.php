@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Webcore\Elogui\Controllers;
 
-use App\DataTables\DataQueryDataTable;
+use Webcore\Elogui\DataTables\DataQueryDataTable;
 use App\Http\Requests;
-use App\Http\Requests\CreateDataQueryRequest;
-use App\Http\Requests\UpdateDataQueryRequest;
-use App\Repositories\DataQueryRepository;
+use Webcore\Elogui\Requests\CreateDataQueryRequest;
+use Webcore\Elogui\Requests\UpdateDataQueryRequest;
+use Webcore\Elogui\Repositories\DataQueryRepository;
 use Flash;
 use App\Http\Controllers\AppBaseController;
 use Response;
@@ -32,7 +32,7 @@ class DataQueryController extends AppBaseController
      */
     public function index(DataQueryDataTable $dataQueryDataTable)
     {
-        return $dataQueryDataTable->render('data_queries.index');
+        return $dataQueryDataTable->render('elogui::data_queries.index');
     }
 
     /**
@@ -43,13 +43,13 @@ class DataQueryController extends AppBaseController
     public function create()
     {
         // add by dandisy
-        $datasource = \App\Models\DataSource::all();
-        $dataquery = \App\Models\DataQuery::all();
+        $datasource = \Webcore\Elogui\Models\DataSource::all();
+        $dataquery = \Webcore\Elogui\Models\DataQuery::all();
         
 
         // edit by dandisy
         //return view('data_queries.create');
-        return view('data_queries.create')
+        return view('elogui::data_queries.create')
             ->with('datasource', $datasource)
             ->with('dataquery', $dataquery);
     }
@@ -91,7 +91,7 @@ class DataQueryController extends AppBaseController
             return redirect(route('dataQueries.index'));
         }
 
-        return view('data_queries.show')->with('dataQuery', $dataQuery);
+        return view('elogui::data_queries.show')->with('dataQuery', $dataQuery);
     }
 
     /**
@@ -104,8 +104,8 @@ class DataQueryController extends AppBaseController
     public function edit($id)
     {
         // add by dandisy
-        $datasource = \App\Models\DataSource::all();
-        $dataquery = \App\Models\DataQuery::all();
+        $datasource = \Webcore\Elogui\Models\DataSource::all();
+        $dataquery = \Webcore\Elogui\Models\DataQuery::all();
         
 
         $dataQuery = $this->dataQueryRepository->findWithoutFail($id);
@@ -118,7 +118,7 @@ class DataQueryController extends AppBaseController
 
         // edit by dandisy
         //return view('data_queries.edit')->with('dataQuery', $dataQuery);
-        return view('data_queries.edit')
+        return view('elogui::data_queries.edit')
             ->with('dataQuery', $dataQuery)
             ->with('datasource', $datasource)
             ->with('dataquery', $dataquery);

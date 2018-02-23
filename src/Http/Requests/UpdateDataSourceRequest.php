@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Webcore\Elogui\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\DataSource;
+use Webcore\Elogui\Models\DataSource;
 
 class UpdateDataSourceRequest extends FormRequest
 {
